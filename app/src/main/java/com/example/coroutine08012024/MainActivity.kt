@@ -36,14 +36,21 @@ class MainActivity : AppCompatActivity() {
         // Dispatcher: Quản lý luồng chạy của Coroutine
         // CoroutineExceptionHandler: Quản lý các exception xảy ra trong coroutine
 
-        CoroutineScope(Dispatchers.Main).launch {
-            launch(Dispatchers.Unconfined) {
-                Log.d("pphat", "Coroutine1: ${Thread.currentThread().name}")
-                delay(1000)  // Delay simulates some work
-                Log.d("pphat", "Coroutine1: ${Thread.currentThread().name}")
+        val coroutineException = CoroutineExceptionHandler { context, throwable ->
+            Log.d("pphat", throwable.message.toString())
+        }
+
+        CoroutineScope(Dispatchers.Main + coroutineException).launch {
+            val job1 = launch {
+                throw Exception("abc")
             }
 
-            Log.d("pphat", "Main function on thread: ${Thread.currentThread().name}")
+            val job2 = launch {
+                Log.d("pphat", "Coroutine 2")
+            }
+
+            job1.start()
+            job2.start()
         }
     }
 }
