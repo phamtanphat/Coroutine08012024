@@ -2,6 +2,7 @@ package com.example.coroutine08012024
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -36,21 +38,18 @@ class MainActivity : AppCompatActivity() {
         // Dispatcher: Quản lý luồng chạy của Coroutine
         // CoroutineExceptionHandler: Quản lý các exception xảy ra trong coroutine
 
-        val coroutineException = CoroutineExceptionHandler { context, throwable ->
-            Log.d("pphat", throwable.message.toString())
-        }
 
-        CoroutineScope(Dispatchers.Main + coroutineException).launch {
-            val job1 = launch {
-                throw Exception("abc")
+        CoroutineScope(Dispatchers.IO).launch {
+            var a = 0
+            for (i in 0..1000) {
+                a += i
+                delay(1)
             }
 
-            val job2 = launch {
-                Log.d("pphat", "Coroutine 2")
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, a.toString(), Toast.LENGTH_SHORT).show()
             }
 
-            job1.start()
-            job2.start()
         }
     }
 }
