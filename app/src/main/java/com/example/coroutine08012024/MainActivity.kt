@@ -38,18 +38,19 @@ class MainActivity : AppCompatActivity() {
         // Dispatcher: Quản lý luồng chạy của Coroutine
         // CoroutineExceptionHandler: Quản lý các exception xảy ra trong coroutine
 
-
         CoroutineScope(Dispatchers.IO).launch {
-            var a = 0
-            for (i in 0..1000) {
-                a += i
-                delay(1)
-            }
+            val mapData = mapOf(
+                "name" to "phat",
+                "age" to 30
+            )
 
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, a.toString(), Toast.LENGTH_SHORT).show()
-            }
-
+            val str = parseData(mapData)
+            Log.d("phat", str)
         }
+    }
+
+    suspend fun parseData(map: Map<String, Any>): String {
+        delay(100)
+        return map.values.joinToString(" ")
     }
 }
