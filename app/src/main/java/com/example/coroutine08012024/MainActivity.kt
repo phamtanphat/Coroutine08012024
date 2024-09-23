@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -39,18 +40,33 @@ class MainActivity : AppCompatActivity() {
         // CoroutineExceptionHandler: Quản lý các exception xảy ra trong coroutine
 
         CoroutineScope(Dispatchers.IO).launch {
-            val mapData = mapOf(
-                "name" to "phat",
-                "age" to 30
-            )
+            val a = 5
+            val b = 10
 
-            val str = parseData(mapData)
-            Log.d("phat", str)
+            // a + b - 2
+            val deferredTotal = CoroutineScope(Dispatchers.IO).async {
+                plusNumber(a, b)
+            }
+
+            val total = deferredTotal.await()
+
+            val deferredResult = CoroutineScope(Dispatchers.IO).async {
+                minusNumber(total, 2)
+            }
+
+            var result = deferredResult.await()
+
+            Log.d("phat", result.toString())
         }
     }
 
-    suspend fun parseData(map: Map<String, Any>): String {
+    suspend fun plusNumber(a: Int, b: Int): Int {
+        delay(500)
+        return a + b
+    }
+
+    suspend fun minusNumber(a: Int, b: Int): Int {
         delay(100)
-        return map.values.joinToString(" ")
+        return a - b
     }
 }
