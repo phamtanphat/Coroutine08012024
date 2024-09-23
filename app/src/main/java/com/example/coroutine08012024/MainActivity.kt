@@ -45,10 +45,15 @@ class MainActivity : AppCompatActivity() {
 
             // a + b - 2
             val deferredTotal = CoroutineScope(Dispatchers.IO).async {
+                throw Exception()
                 plusNumber(a, b)
             }
 
-            val total = deferredTotal.await()
+            val total = try {
+                deferredTotal.await()
+            } catch (e: Exception) {
+                0
+            }
 
             val deferredResult = CoroutineScope(Dispatchers.IO).async {
                 minusNumber(total, 2)
